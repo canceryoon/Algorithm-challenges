@@ -9,25 +9,39 @@ using namespace std;
 inline void checkRule(vector<int> &v)
 {
   short checknum = 0;
+  short tmp = 0;
   for( int i = 0; i < v.size(); i++)
+  {
     cout << v[i] << " ";
-  
-  checknum |= (0x1 << (v[0]-1));
+    checknum |= (0x1 << (v[i]-1)) ;
+  }
+  cout << checknum << " ";
+  checknum &= ~(0x1 << (v[0]-1));
+  cout << checknum << endl;
+ // checknum |= (0x1 << (v[0]-1));
   for( int i = 1; i < v.size(); i++)
   {
     if( v[i-1] > v[i] )
     {
+      tmp |= (0x1 << (v[i]-1));
+      if( (checknum - tmp) > tmp ) 
+      {
+	cout << "error this " << v[i-1] << " " << v[i] << endl;
+	return ;
+      }
+/**
       for( int j = v[i]+1; j < v[i-1]; j++)
 	if( !(checknum & ( 0x1 << (j-1) )))
 	{
 	  cout << "error this " << v[i-1] << " " << v[i] << endl;
 	  return ;
 	}
+**/
     }
-
-    checknum |= (0x1 << (v[i]-1));
+    tmp = 0;
+    checknum &= ~(0x1 << (v[i]-1));
   }
-  cout << " " << checknum <<  endl;
+  cout << endl ;
 }
 
 inline void permutation(vector<int> &v, int depth, int n, int k)
@@ -63,7 +77,7 @@ int main(int argc, char **argv)
       
       if(num == 0)
 	break;
-      else if( num < 0 || num > 16 )
+      else if( !(0 <= num && num <= 16) )
       {
 	cout << "INPUT RANGE: 1 ~ 16" << endl;
 	continue;
@@ -72,8 +86,6 @@ int main(int argc, char **argv)
       vector<int> v(num, 0);
       for( int i = 0; i < num; i++)
 	v[i] = i+1; 
-      checkRule(v);
-      cout << "===========================" << endl;
       permutation(v, 0, num, num);	
     }
   }
