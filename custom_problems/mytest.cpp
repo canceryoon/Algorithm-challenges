@@ -1,60 +1,73 @@
 #include <iostream>
 #include <vector>
-#include <cstdlib>
 #include <algorithm>
-
-#include <string.h>
+#include <fstream>
 
 using namespace std;
 inline void checkRule(vector<int> &v)
 {
   short checknum = 0;
-  short tmp = 0;
-  for( int i = 0; i < v.size(); i++)
-  {
-    cout << v[i] << " ";
-    checknum |= (0x1 << (v[i]-1)) ;
-  }
-  cout << checknum << " ";
-  checknum &= ~(0x1 << (v[0]-1));
-  cout << checknum << endl;
- // checknum |= (0x1 << (v[0]-1));
+	long int ret = v[0];
+  checknum |= (0x1 << (v[0]-1));
   for( int i = 1; i < v.size(); i++)
   {
     if( v[i-1] > v[i] )
     {
-      tmp |= (0x1 << (v[i]-1));
-      if( (checknum - tmp) > tmp ) 
-      {
-	cout << "error this " << v[i-1] << " " << v[i] << endl;
-	return ;
-      }
-/**
       for( int j = v[i]+1; j < v[i-1]; j++)
-	if( !(checknum & ( 0x1 << (j-1) )))
-	{
-	  cout << "error this " << v[i-1] << " " << v[i] << endl;
-	  return ;
+				if( !(checknum & (0x1 << (j-1))) )
+					return ;
+		}
+		checknum |= (0x1 << (v[i]-1));
+		ret = (ret*10) + v[i];
 	}
-**/
-    }
-    tmp = 0;
-    checknum &= ~(0x1 << (v[i]-1));
-  }
-  cout << endl ;
+	cout << ret << endl;
 }
 
-inline void permutation(vector<int> &v, int depth, int n, int k)
+inline void checkRule(vector<int> &v, ostream &retfile)
 {
-  if(depth == k)
+  short checknum = 0;
+	long int ret = v[0];
+  checknum |= (0x1 << (v[0]-1));
+  for( int i = 1; i < v.size(); i++)
   {
-    checkRule(v);
+    if( v[i-1] > v[i] )
+    {
+      for( int j = v[i]+1; j < v[i-1]; j++)
+				if( !(checknum & (0x1 << (j-1))) )
+					return ;
+    }
+		checknum |= (0x1 << (v[i]-1));
+		ret = (ret*10) + v[i] ;
+	}
+		retfile << ret << endl;
+}
+
+inline void permutation(vector<int> &v, int depth, int loop, int end)
+{
+	if(depth == end)
+	{
+		checkRule(v);
+		return;
+	}
+	for(unsigned int i = depth; i < loop; i++)
+	{
+		swap(v[i], v[depth]);
+		permutation(v, depth + 1, loop, end);
+		swap(v[i], v[depth]);
+	}
+}
+
+inline void permutation(vector<int> &v, int depth, int loop, int end, ostream &retfile)
+{
+  if(depth == end)
+  {
+    checkRule(v, retfile);
     return;
   }
-  for(unsigned int i = depth; i < n; i++)
+  for(unsigned int i = depth; i < loop; i++)
   {
     swap(v[i], v[depth]);
-    permutation(v, depth + 1, n, k);
+    permutation(v, depth + 1, loop, end, retfile);
     swap(v[i], v[depth]);
   }
 }
@@ -67,7 +80,7 @@ int main(int argc, char **argv)
     cout << "       p1 " << endl;	
     return -1;
   }
-
+	
   if( argc == 1 )
   {
     while(1)
@@ -76,18 +89,45 @@ int main(int argc, char **argv)
       cin >> num;
       
       if(num == 0)
-	break;
+				break;
       else if( !(0 <= num && num <= 16) )
       {
-	cout << "INPUT RANGE: 1 ~ 16" << endl;
-	continue;
+				cout << "INPUT RANGE: 1 ~ 16" << endl;
+				continue;
       }
       
       vector<int> v(num, 0);
       for( int i = 0; i < num; i++)
-	v[i] = i+1; 
+				v[i] = i+1; 
       permutation(v, 0, num, num);	
     }
   }
+	else
+	{
+		string tcPath(argv[1]);
+		string resultPath(argv[2]);
+	
+		ifstream tcfile(tcPath);
+		ofstream retfile(resultPath, ios::out);
+		
+		if(!tcfile.is_open())
+		{
+			cout << "Fail open tc file: " << tcPath << endl;
+			return -1;
+		}
+
+		int num;
+		while(tcfile >> num)
+		{
+			vector<int> v(num,0);
+			for( int i = 0; i < num; i++)
+				v[i] = i+1;
+			permutation(v, 0, num, num, retfile);
+			retfile << endl;
+		}
+
+		tcfile.close();
+		retfile.close();
+	}
   return 1;
 }
