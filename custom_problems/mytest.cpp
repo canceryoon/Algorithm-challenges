@@ -125,8 +125,8 @@ int main(int argc, char **argv)
 		string tcPath(argv[1]);
 		string resultPath(argv[2]);
 	
-		ifstream tcfile(tcPath);
-		ofstream retfile(resultPath, ios::out);
+		ifstream tcfile(tcPath.c_str());
+		ofstream retfile(resultPath.c_str(), ios::out);
 		
 		if(!tcfile.is_open())
 		{
