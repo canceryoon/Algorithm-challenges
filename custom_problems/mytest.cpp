@@ -1,3 +1,21 @@
+/**
+* DATE:   2017.11.12 
+* AUTHOR: canceryoon
+* There are two threads and Number stack: THD1 and THD2 NUMSTACK.
+* THD1 puts up to N in NUMSTACK in ascending order.
+* THD2 subtracts from NUMSTACK regardless of THD1.
+* Print the number of branches THD2 can print in ascending order.
+* Example: Input Number : 3 
+* Output : 123
+*          132
+*          213
+*          231
+*          321
+* Test Program support standard I/O: <p1 test_case.txt result.txt>
+* Input number range is 0 < N <= 16.
+* If input 0, program is done.
+**/
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
