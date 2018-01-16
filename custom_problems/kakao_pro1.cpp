@@ -1,3 +1,7 @@
+/**
+ * Treasure map
+**/
+
 #include <iostream>
 #include <stdio.h>
 #include <math.h> //using sqrt
