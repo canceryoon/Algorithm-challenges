@@ -2,6 +2,10 @@
  * Treasure map
 **/
 
+/**
+ * DATE   : 2018.01.16
+ * AUTHOR : canceryoon
+**/
 #include <iostream>
 #include <stdio.h>
 #include <math.h> //using sqrt
