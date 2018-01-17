@@ -21,6 +21,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	int ret = calDartScore(argv[1]);
+	cout << ret << endl;
 	return 1;
 }
 
@@ -34,11 +35,48 @@ int main(int argc, char **argv)
 int calDartScore(char *dartSc)
 {
 	int loop = strlen(dartSc);
+	int scIdx = -1;
 	int idx = 0;
 	int sc[3] = { 0 };
+	bool beforeNum = false;
+	int ret = 0;
+
 	while( idx < loop )
 	{
-			
+		if( '0' <= dartSc[idx] && dartSc[idx] <= '9' )
+		{
+			if(beforeNum)
+			{
+				sc[scIdx] = sc[scIdx]*10 + (dartSc[idx]-48) ;
+			}
+			else
+			{
+				scIdx += 1;
+				sc[scIdx] =  (dartSc[idx]-48);
+			}
+			beforeNum = true;
+		}
+		else
+		{
+			beforeNum = false;
+			switch(dartSc[idx])
+			{
+				case 'S': sc[scIdx] = PPOW(sc[scIdx], 1); break;
+				case 'D': sc[scIdx] = PPOW(sc[scIdx], 2); break;
+				case 'T': sc[scIdx] = PPOW(sc[scIdx], 3); break;
+				case '*': 
+					  if(scIdx > 0)
+						  sc[scIdx-1] *= 2;
+					  sc[scIdx] *= 2;
+					  break;
+				case '#': sc[scIdx] *= -1; break;
+				default: cout << "Input ERROR" << endl; break;
+			}
+		}
+
+		idx += 1;	
 	}
-	return 0;
+	for(int i = 0 ; i < 3; i++)
+		ret += sc[i];
+	return ret;
 }
