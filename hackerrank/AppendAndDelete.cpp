@@ -1,3 +1,5 @@
+#include <iostream>
+using namespace std;
 string appendAndDelete(string s, string t, int k) {
   //delete
   int i = 0;
